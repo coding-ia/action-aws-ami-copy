@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
-import { getParameter } from './services/ssmService.ts';
-import { getAMI, copyAMI, getSnapshotIdFromAMI, deregisterAmi, deleteSnapshot} from './services/ec2Service.ts';
+import { getParameter } from './services/ssmService';
+import { getAMI, copyAMI, getSnapshotIdFromAMI, deregisterAmi, deleteSnapshot} from './services/ec2Service';
 
 export async function run(): Promise<void> {
     try {
