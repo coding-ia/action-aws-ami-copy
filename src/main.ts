@@ -62,6 +62,9 @@ export async function run(): Promise<void> {
     core.setOutput('copied-ami-id', copiedAMIId);
     core.exportVariable('COPIED_AMI_ID', copiedAMIId);
 
+    core.setOutput('copied-ami-name', amiInfo.name);
+    core.exportVariable('COPIED_AMI_NAME', amiInfo.name);
+
     core.setOutput('copied-ami-snapshot-id', snapshotIds[0]);
     core.exportVariable('COPIED_AMI_SNAPSHOT_ID', snapshotIds[0]);
   } catch (error) {
