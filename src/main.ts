@@ -13,7 +13,7 @@ export async function run(): Promise<void> {
     const amiId: string = core.getInput('ami-id');
     const ssmParamAMIId: string = core.getInput('ssm-param-ami-id');
     const description: string = core.getInput('description');
-    const region: string = core.getInput('region');
+    const region: string = core.getInput('aws-region');
 
     let copyAMIId: string;
 
