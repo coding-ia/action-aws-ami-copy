@@ -38,25 +38,30 @@ export async function run(): Promise<void> {
             return
         }
 
-        const snapshotIds = getSnapshotIdFromAMI(copiedAMIId)
+        const snapshotIds = await getSnapshotIdFromAMI(copiedAMIId)
 
         if (!snapshotIds) {
             core.setFailed(`Failed to get snapshot IDs for AMI: ${copiedAMIId}`)
             return
         }
 
-        const firstSnapshotId = snapshotIds?.[0];
+        console.log(`Copied AMI: ${copiedAMIId}`)
+        console.log(`Copied AMI Snapshot: ${snapshotIds[0]}`)
 
         core.setOutput('copied-ami-id', copiedAMIId)
         core.exportVariable('COPIED_AMI_ID', copiedAMIId)
 
-        core.setOutput("copied-ami-snapshot-id", snapshotId)
-        core.exportVariable("COPIED_AMI_SNAPSHOT_ID", snapshots[0])
-
-        console.log(`Copying AMI ${copyAMIId} to ${region} region`);
-        console.log(`Description: ${description}`);
+        core.setOutput("copied-ami-snapshot-id", snapshotIds[0])
+        core.exportVariable("COPIED_AMI_SNAPSHOT_ID", snapshotIds[0])
     } catch (error) {
-
+        if (error instanceof Error) {
+            core.setFailed(error.message)
+        } else {
+            core.setFailed('An unexpected error occurred')
+        }
     }
 }
 
+export async function cleanup(): Promise<void> {
+    //const amiId = process.env.COPIED_AMI_ID
+}
