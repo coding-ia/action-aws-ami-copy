@@ -1,0 +1,27 @@
+name: '"AWS AMI Copy" Action for GitHub Actions'
+description: Copies public AWS AMI to destination account.
+
+runs:
+  using: node20
+  main: 'dist/index.js'
+  post: 'dist/cleanup.js'
+
+inputs:
+  ami-id:
+    description: AWS AMI Image ID
+    required: false
+  ssm-param-ami-id:
+    description: SSM parameter for AWS AMI Image ID
+    required: false
+  description:
+    description: AWS AMI Copy Description
+    required: false
+  aws-region:
+    description: AWS Region, e.g. us-east-2
+    required: true
+
+outputs:
+  copied-ami-id:
+    description: AWS AMI Image ID for copied image
+  copied-ami-snapshot-id:
+    description: AWS AMI Snapshot ID

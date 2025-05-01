@@ -43,45 +43,51 @@ export async function copyAMI(
   sourceAmiId: string,
   sourceRegion: string,
   name: string,
-  description: string
+  description: string,
 ): Promise<string | undefined> {
-    const copyCommand = new CopyImageCommand({
-      SourceImageId: sourceAmiId,
-      SourceRegion: sourceRegion,
-      Name: name,
-      Description: description,
-    });
+  const copyCommand = new CopyImageCommand({
+    SourceImageId: sourceAmiId,
+    SourceRegion: sourceRegion,
+    Name: name,
+    Description: description,
+  });
 
-    const copyResult = await ec2Client.send(copyCommand);
-    const newAmiId = copyResult.ImageId;
+  const copyResult = await ec2Client.send(copyCommand);
+  const newAmiId = copyResult.ImageId;
 
-    if (!newAmiId) {
-      throw new Error("Failed to initiate AMI copy");
-    }
+  if (!newAmiId) {
+    throw new Error('Failed to initiate AMI copy');
+  }
 
-    console.log(`Copy started. Waiting for AMI ${newAmiId} to become available...`);
+  console.log(
+    `Copy started. Waiting for AMI ${newAmiId} to become available...`,
+  );
 
-    const waitResult = await waitUntilImageAvailable(
-      {
-        client: ec2Client,
-        maxWaitTime: 600, // seconds
-        minDelay: 10,
-        maxDelay: 30,
-      },
-      {
-        ImageIds: [newAmiId],
-      }
+  const waitResult = await waitUntilImageAvailable(
+    {
+      client: ec2Client,
+      maxWaitTime: 600, // seconds
+      minDelay: 10,
+      maxDelay: 30,
+    },
+    {
+      ImageIds: [newAmiId],
+    },
+  );
+
+  if (waitResult.state !== 'SUCCESS') {
+    throw new Error(
+      `Timed out waiting for AMI ${newAmiId} to become available`,
     );
+  }
 
-    if (waitResult.state !== "SUCCESS") {
-      throw new Error(`Timed out waiting for AMI ${newAmiId} to become available`);
-    }
-
-    console.log(`AMI ${newAmiId} is now available.`);
-    return newAmiId;
+  console.log(`AMI ${newAmiId} is now available.`);
+  return newAmiId;
 }
 
-export async function getSnapshotIdFromAMI(amiId: string): Promise<string[] | undefined> {
+export async function getSnapshotIdFromAMI(
+  amiId: string,
+): Promise<string[] | undefined> {
   try {
     const describeCommand = new DescribeImagesCommand({
       ImageIds: [amiId],
@@ -91,15 +97,15 @@ export async function getSnapshotIdFromAMI(amiId: string): Promise<string[] | un
     const image = response.Images?.[0];
 
     if (!image) {
-      console.error("AMI not found");
+      console.error('AMI not found');
       return undefined;
     }
 
-    return image.BlockDeviceMappings
-      ?.map((bdm) => bdm.Ebs?.SnapshotId)
-      .filter((id): id is string => !!id);
+    return image.BlockDeviceMappings?.map((bdm) => bdm.Ebs?.SnapshotId).filter(
+      (id): id is string => !!id,
+    );
   } catch (error) {
-    console.error("Error fetching snapshot ID:", error);
+    console.error('Error fetching snapshot ID:', error);
     return undefined;
   }
 }
@@ -117,11 +123,11 @@ export async function deregisterAmi(amiId: string): Promise<void> {
 
 export async function deleteSnapshot(snapshotId: string): Promise<void> {
   try {
-    const command = new DeleteSnapshotCommand({ SnapshotId: snapshotId })
-    await ec2Client.send(command)
-    console.log(`Snapshot ${snapshotId} deleted successfully.`)
+    const command = new DeleteSnapshotCommand({ SnapshotId: snapshotId });
+    await ec2Client.send(command);
+    console.log(`Snapshot ${snapshotId} deleted successfully.`);
   } catch (error) {
-    console.error(`Failed to delete snapshot ${snapshotId}:`)
-    throw error
+    console.error(`Failed to delete snapshot ${snapshotId}:`);
+    throw error;
   }
 }

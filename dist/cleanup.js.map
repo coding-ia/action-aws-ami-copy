@@ -1,0 +1,1 @@
+{"version":3,"file":"cleanup.js","sources":["../src/cleanup.ts"],"sourcesContent":["import { cleanup } from './main.js';\n\ncleanup();\n"],"names":[],"mappings":";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAEA,OAAO,EAAE"}

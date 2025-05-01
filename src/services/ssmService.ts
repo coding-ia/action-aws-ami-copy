@@ -1,7 +1,7 @@
 import {
   SSMClient,
   GetParameterCommand,
-  GetParameterCommandInput
+  GetParameterCommandInput,
 } from '@aws-sdk/client-ssm';
 
 const ssmClient = new SSMClient();
@@ -17,7 +17,7 @@ export async function getParameter(name: string): Promise<string | undefined> {
     const response = await ssmClient.send(command);
     return response.Parameter?.Value;
   } catch (error) {
-    console.error("Error fetching parameter:", error);
+    console.error('Error fetching parameter:', error);
     return undefined;
   }
 }
