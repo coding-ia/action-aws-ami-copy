@@ -1,5 +1,7 @@
 import {
   CopyImageCommand,
+  DeleteSnapshotCommand,
+  DeregisterImageCommand,
   DescribeImagesCommand,
   DescribeImagesCommandInput,
   EC2Client,
@@ -99,5 +101,27 @@ export async function getSnapshotIdFromAMI(amiId: string): Promise<string[] | un
   } catch (error) {
     console.error("Error fetching snapshot ID:", error);
     return undefined;
+  }
+}
+
+export async function deregisterAmi(amiId: string): Promise<void> {
+  try {
+    const command = new DeregisterImageCommand({ ImageId: amiId });
+    await ec2Client.send(command);
+    console.log(`AMI ${amiId} deregistered successfully.`);
+  } catch (error) {
+    console.error(`Failed to deregister AMI ${amiId}`);
+    throw error;
+  }
+}
+
+export async function deleteSnapshot(snapshotId: string): Promise<void> {
+  try {
+    const command = new DeleteSnapshotCommand({ SnapshotId: snapshotId })
+    await ec2Client.send(command)
+    console.log(`Snapshot ${snapshotId} deleted successfully.`)
+  } catch (error) {
+    console.error(`Failed to delete snapshot ${snapshotId}:`)
+    throw error
   }
 }
