@@ -6,7 +6,6 @@ runs:
   main: 'dist/index.js'
   post: 'dist/cleanup.js'
 
-
 inputs:
   ami-id:
     description: AWS AMI Image ID
