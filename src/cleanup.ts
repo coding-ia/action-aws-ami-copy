@@ -1,3 +1,3 @@
-import { cleanup } from './main.js'
+import { cleanup } from './main.js';
 
-cleanup()
+cleanup();
